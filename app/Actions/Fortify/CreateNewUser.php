@@ -32,11 +32,18 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            'phone'=>['required','string'],
+            'role'=>['required','string'],
+            'password_confirmation' => ['required', 'same:password'],
         ])->validate();
 
+
         return User::create([
+            'user_id'=>\Illuminate\Support\Str::uuid(),
             'name' => $input['name'],
             'email' => $input['email'],
+            'phone'=>$input['phone'],
+            'role'=>$input['role'],
             'password' => Hash::make($input['password']),
         ]);
     }

@@ -11,7 +11,8 @@ class Appartment extends Model
 {
     /** @use HasFactory<\Database\Factories\AppartmentFactory> */
     use HasFactory;
-    protected $fillable=['id','building_id','appartment_designation','rooms','price','available','created_at','updated_at'];
+    protected $fillable=['id','building_id','appartment_designation','bedroom','bathroom','livingroom','kitchen','balcon','price','available','created_at','updated_at'];
+    
 
     public function bookings(): HasMany{
         return $this->hasMany(Booking::class, 'appartment_id');

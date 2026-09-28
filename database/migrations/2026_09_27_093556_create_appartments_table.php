@@ -16,7 +16,11 @@ return new class extends Migration
             $table->string('appart_designation');
             $table->bigInteger('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
-            $table->json('rooms');
+            $table->integer('bedroom');
+            $table->integer('bathroom');
+            $table->integer('livingroom');
+            $table->integer('kitchen');
+            $table->integer('balcon');
             $table->integer('price');
             $table->string('available')->enum('yes','no');
             $table->timestamps();

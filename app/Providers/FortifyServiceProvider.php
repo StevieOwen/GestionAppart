@@ -13,6 +13,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse;
+use Laravel\Fortify\Contracts\RegisterResponse;
+use Laravel\Fortify\Contracts\VerifyEmailResponse;
+
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -52,5 +56,49 @@ class FortifyServiceProvider extends ServiceProvider
                 ($credentialId ?: $request->session()->getId()).'|'.$request->ip()
             );
         });
+
+        //registration view
+        Fortify::registerView(function () {
+            return view('auth.register'); 
+        });
+
+        //loginview
+        Fortify::loginView(function () {
+            return view('auth.login');
+        });
+
+        //email verify view
+        Fortify::verifyEmailView(function () {
+        return view('auth.verify-email');
+        });
+
+        // Redirect after Registration using route name
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request) {
+                return redirect()->route('verification.notice');
+            }
+        });
+
+        // Custom redirect after clicking email verification link
+        $this->app->instance(VerifyEmailResponse::class, new class implements VerifyEmailResponse {
+            public function toResponse($request)
+            {
+                // Optional: Role-based redirect logic
+                $user = $request->user();
+
+                if ($user && $user->role === 'manager') {
+                    return $request->wantsJson()
+                        ? new JsonResponse('', 204)
+                        : redirect()->route('overview')->with('status', 'Email verified successfully!');
+                }
+
+                // Default redirect for customers / general users
+                return $request->wantsJson()
+                    ? new JsonResponse('', 204)
+                    : redirect()->route('/')->with('status', 'Email verified successfully!');
+            }
+        });
+
+
     }
 }
