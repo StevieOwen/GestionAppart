@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail; // Import Mail facade
 use App\Mail\BookingPendingMail;
+use App\Events\BookingStatusChanged;
 
 class BookingController extends Controller
 {
@@ -49,7 +50,9 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($request->input('booking_id'));
         $booking->status = $request->input('status');
         $booking->save();
-
+               
+        event(new BookingStatusChanged($booking, 'confirmed'));
+        
         return redirect()->back()->with('success', 'Booking status updated successfully.');
     }
 

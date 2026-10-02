@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Appartment;
 use App\Models\Building;
 use Illuminate\Support\Facades\DB;
+use App\Events\BookingStatusChanged;
 
 class CustomerController extends Controller
 {
@@ -90,6 +91,8 @@ class CustomerController extends Controller
             'status' => 'cancelled',
         ]);
 
+        event(new BookingStatusChanged($booking, 'cancelled'));
+
         return back()->with('success', 'Your reservation request has been cancelled successfully.');
     }
 
@@ -158,6 +161,12 @@ class CustomerController extends Controller
         ]);
 
         return back()->with('success', 'Notification preferences saved successfully!');
+    }
+
+    public function showNotifications()
+    {
+        $user = auth()->user();
+        return view('customer.notifications', compact('user'));
     }
 
 

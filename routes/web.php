@@ -7,6 +7,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DefaultController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\CustomerNotificationController;
 
 Route::controller(DefaultController::class)->group(function(){
     Route::get('/','index')->name('/');
@@ -61,6 +62,7 @@ Route::middleware('auth')->group(function() {
         Route::put('customer/update-profile','updateProfile')->name('customers.update-profile');
         Route::put('customer/update-password','updatePassword')->name('customers.update-password');
         Route::put('customer/notifications','updateNotifications')->name('customer.notifications.update');
+        Route::get('customer/notifications','showNotifications')->name('customers.notifications');
 
     });
 });
@@ -73,4 +75,11 @@ Route::middleware('auth')->group(function() {
         Route::post('manager/update-password','updatePassword')->name('manager.settings.password.update');
         Route::post('manager/settings-notification','updateNotifications')->name('manager.settings.notifications.update');
     });
+});
+
+Route::middleware(['auth'])->prefix('customer/notifications')->name('customer.notifications.')->group(function () {
+    Route::get('/', [CustomerNotificationController::class, 'index'])->name('index');
+    Route::patch('/{notification}/read', [CustomerNotificationController::class, 'markAsRead'])->name('read');
+    Route::post('/read-all', [CustomerNotificationController::class, 'markAllAsRead'])->name('readAll');
+    Route::delete('/{notification}', [CustomerNotificationController::class, 'destroy'])->name('destroy');
 });

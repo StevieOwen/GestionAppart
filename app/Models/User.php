@@ -46,5 +46,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(AppartReview::class, 'user_id');
     }
 
+    public function notifications(){
+        return $this->hasMany(notification::class, 'user_id');
+    }
+
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->unread()->count();
+    }
     
 }
