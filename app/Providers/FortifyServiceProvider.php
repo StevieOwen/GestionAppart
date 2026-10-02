@@ -99,6 +99,33 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
+        // Redirect after Login using route name
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+            public function toResponse($request) {
+                $user = $request->user();
+
+                // Check user roles and redirect to appropriate named routes
+                return match ($user->role) {
+                    'admin'    => redirect()->route('/'),
+                    'manager'   => redirect()->route('overview'),
+                    'customer' => redirect()->route('/'),
+                    default    => redirect()->route('/'),
+                };
+            }     
+        });
+
+        // return password reset view
+
+        Fortify::resetPasswordView(function (Request $request) {
+        return view('auth.reset-password', ['request' => $request]);
+        });
+
+        // return forgot password  view
+
+            Fortify::requestPasswordResetLinkView(function () {
+            return view('auth.forgot-password'); 
+        });
+
 
     }
 }

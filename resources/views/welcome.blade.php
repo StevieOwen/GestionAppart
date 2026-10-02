@@ -567,7 +567,7 @@
 
 
     <!-- =========================================================
-         APARTMENTS
+         APARTMENTS (DISCOVER & FILTER SECTION)
     ========================================================== -->
     <section id="apartments" class="bg-gray-50 py-16">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -594,218 +594,277 @@
 
             </div>
 
-
-            @forelse($appartments as $appartment)
-
-                <!-- @php
-                    $rooms = [];
-
-                    if (is_array($appartment->rooms)) {
-                        $rooms = $appartment->rooms;
-                    } elseif (is_string($appartment->rooms)) {
-                        $rooms = json_decode($appartment->rooms, true) ?: [];
-                    }
-
-                    $bedroom = $rooms['bedroom'] ?? $rooms['bedrooms'] ?? 0;
-                    $bathroom = $rooms['bathroom'] ?? $rooms['bathrooms'] ?? 0;
-                    $kitchen = $rooms['kitchen'] ?? 0;
-                    $livingRoom = $rooms['living_room'] ?? $rooms['livingRoom'] ?? 0;
-
-                    $imagePath = $appartment->img
-                        ? asset('storage/' . $appartment->img)
-                        : null;
-                @endphp -->
-
-
-                <!-- Apartment Card -->
-                <article
-                    class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                >
-
-                    <!-- Image -->
-                    <div class="relative h-56 overflow-hidden bg-gray-100">
-
-                        @if($img)
-                            <img
-                                src="{{ $img }}"
-                                alt="{{ $appartment->appart_designation }}"
-                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                                loading="lazy"
+            <!-- Address and Date Search / Filter Form -->
+            <div class="mb-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                <form action="{{ url('/#apartments') }}" method="GET" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                    
+                    <!-- Address / Location Search -->
+                    <div>
+                        <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                            Address / Location
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="address"
+                                id="address"
+                                value="{{ request('address') }}"
+                                placeholder="City, street, or building name..."
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                             >
-                        @else
-                            <div class="flex h-full items-center justify-center text-gray-400">
-                                <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="1.5"
-                                          d="M3 15l4-4a2 2 0 012.828 0L15 16m-3-3l2-2a2 2 0 012.828 0L21 15M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                        @endif
-
-                        <div class="absolute left-4 top-4">
-                            <span class="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm backdrop-blur">
-                                Available
-                            </span>
+                            <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 21l-1.414-1.414-5.657-5.657a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
                         </div>
-
                     </div>
 
-
-                    <!-- Card Content -->
-                    <div class="p-5">
-
-                        <!-- Required hidden apartment ID -->
+                    <!-- Check-in Date -->
+                    <div>
+                        <label for="check_in" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                            Check-in Date
+                        </label>
                         <input
-                            type="hidden"
-                            name="appartment_id"
-                            value="{{ $appartment->id }}"
-                            data-appartment-id="{{ $appartment->id }}"
+                            type="date"
+                            name="check_in"
+                            id="check_in"
+                            value="{{ request('check_in') }}"
+                            class="w-full rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                         >
+                    </div>
 
+                    <!-- Check-out Date -->
+                    <div>
+                        <label for="check_out" class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">
+                            Check-out Date
+                        </label>
+                        <input
+                            type="date"
+                            name="check_out"
+                            id="check_out"
+                            value="{{ request('check_out') }}"
+                            class="w-full rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                        >
+                    </div>
 
-                        <div class="flex items-start justify-between gap-4">
+                    <!-- Submit & Clear Actions -->
+                    <div class="flex items-center gap-2">
+                        <button
+                            type="submit"
+                            class="flex-1 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                        >
+                            Filter Results
+                        </button>
 
-                            <div class="min-w-0">
-                                <h3 class="truncate text-lg font-bold text-gray-900">
-                                    {{ $appartment->appart_designation }}
-                                </h3>
-
-                                <p class="mt-1 truncate text-sm text-gray-500">
-                                    {{ $appartment->building_name }}
-                                    <span class="mx-1">•</span>
-                                    {{ $appartment->address }}
-                                </p>
-                            </div>
-
-                        </div>
-
-
-                        <!-- Room Features -->
-                        <div class="mt-5 grid grid-cols-4 gap-2 border-y border-gray-100 py-4">
-
-                            <!-- Bedroom -->
-                            <div class="text-center">
-                                <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="1.5"
-                                              d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6M5 10V7a2 2 0 012-2h10a2 2 0 012 2v3M3 18h18M6 18v2M18 18v2"/>
-                                    </svg>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    {{$appartment->bedroom == 1 ? 'Bed' : 'Beds' }}
-                                </p>
-                            </div>
-
-                            <!-- Bathroom -->
-                            <div class="text-center">
-                                <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="1.5"
-                                              d="M5 11h14M6 11V6a2 2 0 014-1v6M18 11v4a4 4 0 01-4 4h-4a4 4 0 01-4-4v-4M8 19v2M16 19v2"/>
-                                    </svg>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    {{ $appartment->bathroom == 1 ? 'Bath' : 'Baths' }}
-                                </p>
-                            </div>
-
-                            <!-- Kitchen -->
-                            <div class="text-center">
-                                <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="1.5"
-                                              d="M6 3v18M10 3v6a2 2 0 01-4 0V3M14 3v18M18 3v18M16 3h4"/>
-                                    </svg>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    {{ $appartment->kitchen }} Kitchen
-                                </p>
-                            </div>
-
-                            <!-- Living Room -->
-                            <div class="text-center">
-                                <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="1.5"
-                                              d="M4 11h16v7H4v-7zM6 11V8a2 2 0 012-2h8a2 2 0 012 2v3M7 18v2M17 18v2"/>
-                                    </svg>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">
-                                    {{ $appartment->livingRoom }} Living
-                                </p>
-                            </div>
-
-                        </div>
-
-
-                        <!-- Price + Action -->
-                        <div class="mt-5 flex items-center justify-between gap-4">
-
-                            <div>
-                                <p class="text-xl font-bold text-gray-900">
-                                    ${{ number_format($appartment->price, 2) }}
-                                </p>
-
-                                <p class="text-xs text-gray-500">
-                                    per night
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                @click="openBooking({
-                                    id: {{ (int) $appartment->id }},
-                                    name: @js($appartment->appart_designation),
-                                    price: {{ (float) $appartment->price }}
-                                })"
-                                class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                        @if(request()->hasAny(['address', 'check_in', 'check_out']))
+                            <a
+                                href="{{ url('/#apartments') }}"
+                                class="rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50"
+                                title="Clear filters"
                             >
-                                Book Apartment
-                            </button>
+                                Clear
+                            </a>
+                        @endif
+                    </div>
+
+                </form>
+            </div>
+
+
+            <!-- Grid Container -->
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+                @forelse($appartments as $appartment)
+
+                    @php
+                        $firstImage = $appartment->images->first();
+                    @endphp
+
+                    <!-- Apartment Card -->
+                    <article
+                        class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    >
+
+                        <!-- Image -->
+                        <div class="relative h-56 overflow-hidden bg-gray-100">
+
+                            @if($firstImage)
+                                <img
+                                    src="{{ asset('storage/' . $firstImage->img) }}"
+                                    alt="{{ $appartment->appart_designation }}"
+                                    class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                >
+                            @else
+                                <div class="flex h-full items-center justify-center text-gray-400">
+                                    <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="1.5"
+                                              d="M3 15l4-4a2 2 0 012.828 0L15 16m-3-3l2-2a2 2 0 012.828 0L21 15M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            @endif
+
+                            <div class="absolute left-4 top-4">
+                                <span class="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm backdrop-blur">
+                                    Available
+                                </span>
+                            </div>
 
                         </div>
 
+
+                        <!-- Card Content -->
+                        <div class="p-5">
+
+                            <!-- Required hidden apartment ID -->
+                            <input
+                                type="hidden"
+                                name="appartment_id"
+                                value="{{ $appartment->id }}"
+                                data-appartment-id="{{ $appartment->id }}"
+                            >
+
+
+                            <div class="flex items-start justify-between gap-4">
+
+                                <div class="min-w-0">
+                                    <h3 class="truncate text-lg font-bold text-gray-900">
+                                        {{ $appartment->appart_designation }}
+                                    </h3>
+
+                                    <p class="mt-1 truncate text-sm text-gray-500">
+                                        {{ $appartment->building->building_name }}
+                                        <span class="mx-1">•</span>
+                                        {{ $appartment->building->address }}
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Room Features -->
+                            <div class="mt-5 grid grid-cols-4 gap-2 border-y border-gray-100 py-4">
+
+                                <!-- Bedroom -->
+                                <div class="text-center">
+                                    <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="1.5"
+                                                  d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6M5 10V7a2 2 0 012-2h10a2 2 0 012 2v3M3 18h18M6 18v2M18 18v2"/>
+                                        </svg>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                       {{ $appartment->bedroom }} {{ $appartment->bedroom == 1 ? 'Bed' : 'Beds' }}
+                                    </p>
+                                </div>
+
+                                <!-- Bathroom -->
+                                <div class="text-center">
+                                    <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="1.5"
+                                                  d="M5 11h14M6 11V6a2 2 0 014-1v6M18 11v4a4 4 0 01-4 4h-4a4 4 0 01-4-4v-4M8 19v2M16 19v2"/>
+                                        </svg>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        {{ $appartment->bathroom}} {{ $appartment->bathroom == 1 ? 'Bath' : 'Baths' }}
+                                    </p>
+                                </div>
+
+                                <!-- Kitchen -->
+                                <div class="text-center">
+                                    <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="1.5"
+                                                  d="M6 3v18M10 3v6a2 2 0 01-4 0V3M14 3v18M18 3v18M16 3h4"/>
+                                        </svg>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        {{ $appartment->kitchen }} {{ $appartment->kitchen == 1 ? 'Kitchen' : 'Kitchens' }} 
+                                    </p>
+                                </div>
+
+                                <!-- Living Room -->
+                                <div class="text-center">
+                                    <div class="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-gray-50 text-gray-500">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="1.5"
+                                                  d="M4 11h16v7H4v-7zM6 11V8a2 2 0 012-2h8a2 2 0 012 2v3M7 18v2M17 18v2"/>
+                                        </svg>
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        {{ $appartment->livingroom }} {{ $appartment->livingroom == 1 ? 'Living' : 'Livings' }} 
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Price + Action -->
+                            <div class="mt-5 flex items-center justify-between gap-4">
+
+                                <div>
+                                    <p class="text-xl font-bold text-gray-900">
+                                        ${{ number_format($appartment->price, 2) }}
+                                    </p>
+
+                                    <p class="text-xs text-gray-500">
+                                        per night
+                                    </p>
+                                </div>
+
+                                <a
+                                    href="{{ route('customers.book-appartment', array_filter(['id' => $appartment->id, 'check_in' => request('check_in'), 'check_out' => request('check_out')])) }}"
+                                    class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                                >
+                                    Book Apartment
+                                </a>
+
+                            </div>
+
+                        </div>
+                    </article>
+
+                @empty
+
+                    <!-- Empty State -->
+                    <div class="col-span-full rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
+
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                            <svg class="h-8 w-8 text-gray-400"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="1.5"
+                                      d="M3 15l4-4a2 2 0 012.828 0L15 16m-3-3l2-2a2 2 0 012.828 0L21 15M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+
+                        <h3 class="mt-5 text-lg font-bold text-gray-900">
+                            No apartments available
+                        </h3>
+
+                        <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
+                            There are currently no apartments matching your selected filters. Try searching for a different address or date range.
+                        </p>
+
                     </div>
-                </article>
 
-            @empty
+                @endforelse
 
-                <!-- Empty State -->
-                <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-16 text-center">
-
-                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                        <svg class="h-8 w-8 text-gray-400"
-                             fill="none"
-                             stroke="currentColor"
-                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1.5"
-                                  d="M3 15l4-4a2 2 0 012.828 0L15 16m-3-3l2-2a2 2 0 012.828 0L21 15M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-
-                    <h3 class="mt-5 text-lg font-bold text-gray-900">
-                        No apartments available
-                    </h3>
-
-                    <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
-                        There are currently no apartments available for booking.
-                        Please check back later.
-                    </p>
-
-                </div>
-
-            @endforelse
+            </div>
 
         </div>
     </section>
@@ -829,188 +888,6 @@
             class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm"
             @click="closeBooking()"
         ></div>
-
-
-        <!-- Modal Container -->
-        <div class="relative flex min-h-full items-center justify-center p-4">
-
-            <div
-                x-show="bookingOpen"
-                x-transition
-                @click.stop
-                class="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
-            >
-
-                <!-- Modal Header -->
-                <div class="border-b border-gray-100 px-6 py-5">
-
-                    <div class="flex items-start justify-between gap-4">
-
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-brand-600">
-                                Reservation
-                            </p>
-
-                            <h2 id="booking-modal-title"
-                                class="mt-1 text-xl font-bold text-gray-900"
-                                x-text="selectedApartment ? selectedApartment.name : 'Book Apartment'">
-                            </h2>
-                        </div>
-
-                        <button
-                            type="button"
-                            @click="closeBooking()"
-                            class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
-                            aria-label="Close booking modal"
-                        >
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
-                                      d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-
-                    </div>
-                </div>
-
-
-                <!-- Booking Form -->
-                <form method="POST"
-                      action="{{ url('/bookings/store') }}"
-                      class="px-6 py-6"
-                >
-                    @csrf
-
-                    <!-- Apartment ID -->
-                    <input
-                        type="hidden"
-                        name="appartment_id"
-                        :value="selectedApartment ? selectedApartment.id : ''"
-                    >
-
-
-                    <!-- Dates -->
-                    <div class="grid gap-4 sm:grid-cols-2">
-
-                        <div>
-                            <label for="check_in"
-                                   class="mb-2 block text-sm font-semibold text-gray-700">
-                                Check-In
-                            </label>
-
-                            <input
-                                id="check_in"
-                                name="check_in"
-                                type="date"
-                                x-model="checkIn"
-                                required
-                                :min="new Date().toISOString().split('T')[0]"
-                                class="block w-full rounded-xl border-gray-300 px-4 py-3 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500"
-                            >
-                        </div>
-
-                        <div>
-                            <label for="check_out"
-                                   class="mb-2 block text-sm font-semibold text-gray-700">
-                                Check-Out
-                            </label>
-
-                            <input
-                                id="check_out"
-                                name="check_out"
-                                type="date"
-                                x-model="checkOut"
-                                required
-                                :min="checkIn || new Date().toISOString().split('T')[0]"
-                                class="block w-full rounded-xl border-gray-300 px-4 py-3 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500"
-                            >
-                        </div>
-
-                    </div>
-
-
-                    <!-- Price Summary -->
-                    <div class="mt-6 rounded-xl bg-gray-50 p-4">
-
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-500">
-                                Price per night
-                            </span>
-
-                            <span class="font-semibold text-gray-900">
-                                $<span x-text="selectedApartment ? formatPrice(selectedApartment.price) : '0.00'"></span>
-                            </span>
-                        </div>
-
-                        <div class="mt-3 flex items-center justify-between text-sm">
-                            <span class="text-gray-500">
-                                Number of nights
-                            </span>
-
-                            <span class="font-semibold text-gray-900"
-                                  x-text="numberOfNights">
-                            </span>
-                        </div>
-
-                        <div class="mt-4 border-t border-gray-200 pt-4">
-
-                            <div class="flex items-center justify-between">
-
-                                <span class="font-bold text-gray-900">
-                                    Estimated Total
-                                </span>
-
-                                <span class="text-2xl font-extrabold text-brand-600">
-                                    $<span x-text="formatPrice(totalPrice)">
-                                    </span>
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Validation message -->
-                    <div
-                        x-show="checkIn && checkOut && numberOfNights <= 0"
-                        x-cloak
-                        class="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
-                    >
-                        Check-out must be after check-in.
-                    </div>
-
-
-                    <!-- Actions -->
-                    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-
-                        <button
-                            type="button"
-                            @click="closeBooking()"
-                            class="rounded-xl border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="submit"
-                            :disabled="numberOfNights <= 0"
-                            :class="numberOfNights > 0
-                                ? 'bg-brand-600 hover:bg-brand-700 cursor-pointer'
-                                : 'bg-gray-300 cursor-not-allowed'"
-                            class="rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition"
-                        >
-                            Confirm Booking
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-        </div>
     </div>
 
 
@@ -1209,4 +1086,3 @@
 
 </body>
 </html>
-

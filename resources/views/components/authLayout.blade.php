@@ -118,5 +118,20 @@
 
     {{$slot}}
 
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+    <footer class="border-t border-slate-200 bg-white">
+
+        <div class="mx-auto max-w-7xl px-4 py-5 text-center sm:px-6 lg:px-8">
+
+            <p class="text-xs text-slate-400">
+                © {{ date('Y') }} StayHub. All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
 </body>
 </html>
