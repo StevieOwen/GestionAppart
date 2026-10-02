@@ -8,61 +8,57 @@
         startDate: '',
         endDate: '',
 
+        showStatusModal: false,
+        selectedBookingId: '',
+        selectedStatus: '',
 
-    showStatusModal: false,
-    selectedBookingId: '',
-    selectedStatus: '',
+        openStatusModal(id, status) {
+            this.selectedBookingId = id;
+            this.selectedStatus = status;
+            this.showStatusModal = true;
+        },
 
-    openStatusModal(id, status) {
-        this.selectedBookingId = id;
-        this.selectedStatus = status;
-        this.showStatusModal = true;
-    },
+        closeStatusModal() {
+            this.showStatusModal = false;
+            this.selectedBookingId = '';
+            this.selectedStatus = '';
+        },
 
-    closeStatusModal() {
-        this.showStatusModal = false;
-        this.selectedBookingId = '';
-        this.selectedStatus = '';
-    },
+        resetFilters() {
+            this.activeStatus = 'all';
+            this.selectedBuilding = 'all';
+            this.startDate = '';
+            this.endDate = '';
+        },
 
-    resetFilters() {
-        this.activeStatus = 'all';
-        this.selectedBuilding = 'all';
-        this.startDate = '';
-        this.endDate = '';
-    },
+        matchesBooking(status, buildingId, startDate, endDate) {
+            if (
+                this.activeStatus !== 'all' &&
+                status !== this.activeStatus
+            ) {
+                return false;
+            }
 
-    matchesBooking(status, buildingId, startDate, endDate) {
-        if (
-            this.activeStatus !== 'all' &&
-            status !== this.activeStatus
-        ) {
-            return false;
+            if (
+                this.selectedBuilding !== 'all' &&
+                String(buildingId) !== String(this.selectedBuilding)
+            ) {
+                return false;
+            }
+
+            if (this.startDate && startDate < this.startDate) {
+                return false;
+            }
+
+            if (this.endDate && endDate > this.endDate) {
+                return false;
+            }
+
+            return true;
         }
-
-        if (
-            this.selectedBuilding !== 'all' &&
-            String(buildingId) !== String(this.selectedBuilding)
-        ) {
-            return false;
-        }
-
-        if (this.startDate && startDate < this.startDate) {
-            return false;
-        }
-
-        if (this.endDate && endDate > this.endDate) {
-            return false;
-        }
-
-        return true;
-    }
-}"
-@keydown.escape.window="closeStatusModal()"
-
-
+    }"
+    @keydown.escape.window="closeStatusModal()"
 >
-
 
 <div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8">
 
@@ -70,15 +66,12 @@
         PAGE HEADER
     ========================================================== --}}
     <div class="mb-8">
-
         <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Reservation & Booking Management
         </h1>
-
         <p class="mt-1 max-w-3xl text-sm text-slate-500 sm:text-base">
             Monitor property bookings, filter by date or building, and update reservation statuses.
         </p>
-
     </div>
 
 
@@ -86,7 +79,6 @@
         SUCCESS ALERT
     ========================================================== --}}
     @if(session('success'))
-
         <div
             x-data="{ show: true }"
             x-show="show"
@@ -94,9 +86,7 @@
             role="alert"
             class="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800"
         >
-
             <div class="flex items-start gap-3">
-
                 <svg
                     class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600"
                     fill="none"
@@ -110,11 +100,9 @@
                         d="M5 13l4 4L19 7"
                     />
                 </svg>
-
                 <p class="text-sm font-medium">
                     {{ session('success') }}
                 </p>
-
             </div>
 
             <button
@@ -136,9 +124,7 @@
                     />
                 </svg>
             </button>
-
         </div>
-
     @endif
 
 
@@ -146,7 +132,6 @@
         ERROR ALERT
     ========================================================== --}}
     @if(session('error') || $errors->any())
-
         <div
             x-data="{ show: true }"
             x-show="show"
@@ -154,11 +139,8 @@
             role="alert"
             class="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800"
         >
-
             <div class="flex items-start justify-between gap-4">
-
                 <div class="flex items-start gap-3">
-
                     <svg
                         class="mt-0.5 h-5 w-5 shrink-0 text-rose-600"
                         fill="none"
@@ -174,7 +156,6 @@
                     </svg>
 
                     <div class="text-sm">
-
                         @if(session('error'))
                             <p class="font-medium">
                                 {{ session('error') }}
@@ -188,9 +169,7 @@
                                 @endforeach
                             </ul>
                         @endif
-
                     </div>
-
                 </div>
 
                 <button
@@ -212,11 +191,8 @@
                         />
                     </svg>
                 </button>
-
             </div>
-
         </div>
-
     @endif
 
 
@@ -236,19 +212,15 @@
 
         {{-- Total Reservations --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
             <div class="flex items-center justify-between">
-
                 <div>
                     <p class="text-sm font-medium text-slate-500">
                         Total Reservations
                     </p>
-
                     <p class="mt-2 text-2xl font-bold text-slate-900">
                         {{ $bookings->count() }}
                     </p>
                 </div>
-
                 <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
                     <svg
                         class="h-6 w-6"
@@ -264,27 +236,20 @@
                         />
                     </svg>
                 </div>
-
             </div>
-
         </div>
-
 
         {{-- Confirmed --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
             <div class="flex items-center justify-between">
-
                 <div>
                     <p class="text-sm font-medium text-slate-500">
                         Confirmed
                     </p>
-
                     <p class="mt-2 text-2xl font-bold text-emerald-700">
                         {{ $confirmedCount }}
                     </p>
                 </div>
-
                 <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                     <svg
                         class="h-6 w-6"
@@ -300,27 +265,20 @@
                         />
                     </svg>
                 </div>
-
             </div>
-
         </div>
-
 
         {{-- Processing --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
             <div class="flex items-center justify-between">
-
                 <div>
                     <p class="text-sm font-medium text-slate-500">
                         Pending Processing
                     </p>
-
                     <p class="mt-2 text-2xl font-bold text-amber-600">
                         {{ $processingCount }}
                     </p>
                 </div>
-
                 <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                     <svg
                         class="h-6 w-6"
@@ -336,31 +294,23 @@
                         />
                     </svg>
                 </div>
-
             </div>
-
         </div>
-
 
         {{-- Revenue --}}
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
             <div class="flex items-center justify-between">
-
                 <div>
                     <p class="text-sm font-medium text-slate-500">
                         Total Revenue
                     </p>
-
                     <p class="mt-2 text-2xl font-bold text-slate-900">
                         ${{ number_format($confirmedRevenue, 2) }}
                     </p>
-
                     <p class="mt-1 text-xs text-slate-400">
                         Confirmed bookings
                     </p>
                 </div>
-
                 <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
                     <svg
                         class="h-6 w-6"
@@ -376,9 +326,7 @@
                         />
                     </svg>
                 </div>
-
             </div>
-
         </div>
 
     </div>
@@ -390,12 +338,10 @@
     <div class="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
         <div class="border-b border-slate-200 px-5 py-4 sm:px-6">
-
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
                 {{-- Status Pills --}}
                 <div class="flex flex-wrap gap-2">
-
                     <button
                         type="button"
                         @click="activeStatus = 'all'"
@@ -415,7 +361,6 @@
                         </span>
                     </button>
 
-
                     <button
                         type="button"
                         @click="activeStatus = 'confirmed'"
@@ -425,7 +370,6 @@
                         class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition"
                     >
                         Confirmed
-
                         <span
                             class="rounded-full px-1.5 py-0.5 text-[10px]"
                             :class="activeStatus === 'confirmed'
@@ -436,7 +380,6 @@
                         </span>
                     </button>
 
-
                     <button
                         type="button"
                         @click="activeStatus = 'processing'"
@@ -446,7 +389,6 @@
                         class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition"
                     >
                         Processing
-
                         <span
                             class="rounded-full px-1.5 py-0.5 text-[10px]"
                             :class="activeStatus === 'processing'
@@ -457,7 +399,6 @@
                         </span>
                     </button>
 
-
                     <button
                         type="button"
                         @click="activeStatus = 'cancelled'"
@@ -467,7 +408,6 @@
                         class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition"
                     >
                         Cancelled
-
                         <span
                             class="rounded-full px-1.5 py-0.5 text-[10px]"
                             :class="activeStatus === 'cancelled'
@@ -477,11 +417,9 @@
                             {{ $cancelledCount }}
                         </span>
                     </button>
-
                 </div>
 
             </div>
-
         </div>
 
 
@@ -511,7 +449,6 @@
                             {{ $building->building_name }}
                         </option>
                     @endforeach
-
                 </select>
             </div>
 
@@ -554,7 +491,6 @@
 
             {{-- Reset --}}
             <div class="flex items-end">
-
                 <button
                     type="button"
                     @click="resetFilters()"
@@ -576,7 +512,6 @@
 
                     Reset Filters
                 </button>
-
             </div>
 
         </div>
@@ -590,7 +525,6 @@
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
         <div class="flex flex-col gap-2 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-
             <div>
                 <h2 class="text-lg font-bold text-slate-900">
                     Reservations
@@ -605,7 +539,6 @@
                 {{ $bookings->count() }}
                 {{ $bookings->count() === 1 ? 'reservation' : 'reservations' }}
             </div>
-
         </div>
 
 
@@ -614,39 +547,29 @@
             <table class="w-full min-w-[1250px] text-left text-sm">
 
                 <thead class="bg-slate-50">
-
                     <tr class="border-b border-slate-200">
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Booking ID
                         </th>
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Customer Info
                         </th>
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Property & Building
                         </th>
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Dates & Duration
                         </th>
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Total Price
                         </th>
-
                         <th class="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Status
                         </th>
-
                         <th class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Actions
                         </th>
-
                     </tr>
-
                 </thead>
 
 
@@ -668,6 +591,7 @@
                         @endphp
 
                         <tr
+                            data-booking-row
                             x-show="matchesBooking(
                                 @js($bookingStatus),
                                 @js($buildingId),
@@ -682,15 +606,12 @@
                                 BOOKING ID
                             ========================================== --}}
                             <td class="whitespace-nowrap px-5 py-5 align-middle">
-
                                 <span class="font-bold text-indigo-600">
                                     #BK-{{ $booking->id }}
                                 </span>
-
                                 <p class="mt-1 text-xs text-slate-400">
                                     {{ $booking->created_at?->format('M d, Y') }}
                                 </p>
-
                             </td>
 
 
@@ -698,15 +619,12 @@
                                 CUSTOMER
                             ========================================== --}}
                             <td class="px-5 py-5 align-middle">
-
                                 <div class="flex items-center gap-3">
-
                                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
                                         {{ strtoupper(substr($booking->user?->name ?? 'U', 0, 1)) }}
                                     </div>
 
                                     <div class="min-w-0">
-
                                         <p class="font-semibold text-slate-900">
                                             {{ $booking->user?->name ?? 'Unknown Customer' }}
                                         </p>
@@ -720,11 +638,8 @@
                                                 {{ $booking->user->phone }}
                                             </p>
                                         @endif
-
                                     </div>
-
                                 </div>
-
                             </td>
 
 
@@ -732,7 +647,6 @@
                                 PROPERTY
                             ========================================== --}}
                             <td class="px-5 py-5 align-middle">
-
                                 <p class="font-semibold text-slate-900">
                                     {{ $booking->appartment?->appart_designation ?? 'Unknown Apartment' }}
                                 </p>
@@ -754,7 +668,6 @@
 
                                     {{ $booking->appartment?->building?->building_name ?? 'Unknown Building' }}
                                 </span>
-
                             </td>
 
 
@@ -762,13 +675,8 @@
                                 DATES
                             ========================================== --}}
                             <td class="px-5 py-5 align-middle">
-
                                 <div class="flex items-center gap-2 text-sm font-medium text-slate-700">
-
-                                    <span>
-                                        {{ $booking->start_date }}
-                                    </span>
-
+                                    <span>{{ $booking->start_date }}</span>
                                     <svg
                                         class="h-4 w-4 text-slate-400"
                                         fill="none"
@@ -782,17 +690,12 @@
                                             d="M9 5l7 7-7 7"
                                         />
                                     </svg>
-
-                                    <span>
-                                        {{ $booking->end_date }}
-                                    </span>
-
+                                    <span>{{ $booking->end_date }}</span>
                                 </div>
 
                                 <span class="mt-2 inline-flex rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
                                     {{ $booking->number_days }} Days
                                 </span>
-
                             </td>
 
 
@@ -800,11 +703,9 @@
                                 PRICE
                             ========================================== --}}
                             <td class="whitespace-nowrap px-5 py-5 align-middle">
-
                                 <span class="text-base font-bold text-slate-900">
                                     ${{ number_format((float) $booking->price, 2) }}
                                 </span>
-
                             </td>
 
 
@@ -812,42 +713,26 @@
                                 STATUS
                             ========================================== --}}
                             <td class="px-5 py-5 align-middle">
-
                                 @if($bookingStatus === 'confirmed')
-
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-800">
-
                                         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-
                                         Confirmed
                                     </span>
-
                                 @elseif($bookingStatus === 'processing')
-
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-800">
-
                                         <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-
                                         Processing
                                     </span>
-
                                 @elseif($bookingStatus === 'cancelled')
-
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-800">
-
                                         <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
-
                                         Cancelled
                                     </span>
-
                                 @else
-
                                     <span class="inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700">
                                         {{ ucfirst($bookingStatus ?: 'Unknown') }}
                                     </span>
-
                                 @endif
-
                             </td>
 
 
@@ -855,99 +740,89 @@
                                 ACTIONS
                             ========================================== --}}
                             <td class="px-5 py-5 align-middle">
-
                                 <div class="flex items-center justify-end">
-
-                                    <div
-                                        x-data="{ open: false }"
-                                        class="relative"
-                                    >
-
-                                        <button
-                                            type="button"
-                                            @click="open = !open"
-                                            @keydown.escape="open = false"
-                                            class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        >
-                                            Update Status
-
-                                            <svg
-                                                class="h-4 w-4 transition"
-                                                :class="open ? 'rotate-180' : ''"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M19 9l-7 7-7-7"
-                                                />
+                                    @if($bookingStatus === 'cancelled')
+                                        {{-- Locked badge for cancelled bookings --}}
+                                        <span class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-400">
+                                            <svg class="h-3.5 w-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             </svg>
-
-                                        </button>
-
-
-                                        {{-- Status Dropdown --}}
-                                        <div
-                                            x-show="open"
-                                            x-cloak
-                                            x-transition
-                                            @click.outside="open = false"
-                                            class="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
-                                        >
-
-                                            @if($bookingStatus !== 'processing')
-                                                <button
-                                                    type="button"
-                                                    @click="
-                                                        open = false;
-                                                        openStatusModal('{{ $booking->id }}', 'processing')
-                                                    "
-                                                    class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-amber-700 transition hover:bg-amber-50"
+                                            Locked
+                                        </span>
+                                    @else
+                                        {{-- Action Dropdown --}}
+                                        <div x-data="{ open: false }" class="relative">
+                                            <button
+                                                type="button"
+                                                @click="open = !open"
+                                                @keydown.escape="open = false"
+                                                class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            >
+                                                Update Status
+                                                <svg
+                                                    class="h-4 w-4 transition"
+                                                    :class="open ? 'rotate-180' : ''"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
                                                 >
-                                                    <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-                                                    Set Processing
-                                                </button>
-                                            @endif
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
 
+                                            {{-- Status Dropdown Menu --}}
+                                            <div
+                                                x-show="open"
+                                                x-cloak
+                                                x-transition
+                                                @click.outside="open = false"
+                                                class="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+                                            >
+                                                @if($bookingStatus !== 'processing')
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            open = false;
+                                                            openStatusModal('{{ $booking->id }}', 'processing')
+                                                        "
+                                                        class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-amber-700 transition hover:bg-amber-50"
+                                                    >
+                                                        <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                                                        Set Processing
+                                                    </button>
+                                                @endif
 
-                                            @if($bookingStatus !== 'confirmed')
-                                                <button
-                                                    type="button"
-                                                    @click="
-                                                        open = false;
-                                                        openStatusModal('{{ $booking->id }}', 'confirmed')
-                                                    "
-                                                    class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-emerald-700 transition hover:bg-emerald-50"
-                                                >
-                                                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                                                    Confirm Booking
-                                                </button>
-                                            @endif
+                                                @if($bookingStatus !== 'confirmed')
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            open = false;
+                                                            openStatusModal('{{ $booking->id }}', 'confirmed')
+                                                        "
+                                                        class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-emerald-700 transition hover:bg-emerald-50"
+                                                    >
+                                                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                                                        Confirm Booking
+                                                    </button>
+                                                @endif
 
-
-                                            @if($bookingStatus !== 'cancelled')
-                                                <button
-                                                    type="button"
-                                                    @click="
-                                                        open = false;
-                                                        openStatusModal('{{ $booking->id }}', 'cancelled')
-                                                    "
-                                                    class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-rose-700 transition hover:bg-rose-50"
-                                                >
-                                                    <span class="h-2 w-2 rounded-full bg-rose-500"></span>
-                                                    Cancel Booking
-                                                </button>
-                                            @endif
-
+                                                @if($bookingStatus !== 'cancelled')
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            open = false;
+                                                            openStatusModal('{{ $booking->id }}', 'cancelled')
+                                                        "
+                                                        class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-rose-700 transition hover:bg-rose-50"
+                                                    >
+                                                        <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+                                                        Cancel Booking
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </div>
-
-                                    </div>
-
+                                    @endif
                                 </div>
-
                             </td>
 
                         </tr>
@@ -960,11 +835,8 @@
                                 colspan="7"
                                 class="px-6 py-16 text-center"
                             >
-
                                 <div class="mx-auto flex max-w-md flex-col items-center">
-
                                     <div class="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-
                                         <svg
                                             class="h-8 w-8"
                                             fill="none"
@@ -978,7 +850,6 @@
                                                 d="M8 7V3m8 4V3m-9 4h10a2 2 0 012 2v11a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2zm0 5h10M8 17h3"
                                             />
                                         </svg>
-
                                     </div>
 
                                     <h3 class="mt-5 text-base font-semibold text-slate-900">
@@ -988,9 +859,7 @@
                                     <p class="mt-2 text-sm leading-6 text-slate-500">
                                         There are currently no bookings associated with your properties.
                                     </p>
-
                                 </div>
-
                             </td>
                         </tr>
 
@@ -999,7 +868,6 @@
 
                     {{-- Client-side Filter Empty State --}}
                     @if($bookings->count() > 0)
-
                         <tr
                             x-show="!Array.from($el.parentElement.querySelectorAll('tr[data-booking-row]')).some(row => row.offsetParent !== null)"
                             x-cloak
@@ -1010,9 +878,7 @@
                                 class="px-6 py-14 text-center"
                             >
                                 <div class="flex flex-col items-center">
-
                                     <div class="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-
                                         <svg
                                             class="h-7 w-7"
                                             fill="none"
@@ -1026,7 +892,6 @@
                                                 d="M21 21l-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0z"
                                             />
                                         </svg>
-
                                     </div>
 
                                     <h3 class="mt-4 font-semibold text-slate-900">
@@ -1044,11 +909,9 @@
                                     >
                                         Reset Filters
                                     </button>
-
                                 </div>
                             </td>
                         </tr>
-
                     @endif
 
                 </tbody>
@@ -1093,7 +956,7 @@
 
             <div class="p-6">
 
-                {{-- Close --}}
+                {{-- Close Button --}}
                 <button
                     type="button"
                     @click="closeStatusModal()"
@@ -1115,7 +978,7 @@
                 </button>
 
 
-                {{-- Dynamic Icon --}}
+                {{-- Dynamic Status Icon --}}
                 <div
                     class="flex h-12 w-12 items-center justify-center rounded-xl"
                     :class="{
@@ -1124,7 +987,6 @@
                         'bg-rose-100 text-rose-600': selectedStatus === 'cancelled'
                     }"
                 >
-
                     {{-- Confirm Icon --}}
                     <svg
                         x-show="selectedStatus === 'confirmed'"
@@ -1140,7 +1002,6 @@
                             d="M5 13l4 4L19 7"
                         />
                     </svg>
-
 
                     {{-- Processing Icon --}}
                     <svg
@@ -1158,7 +1019,6 @@
                         />
                     </svg>
 
-
                     {{-- Cancel Icon --}}
                     <svg
                         x-show="selectedStatus === 'cancelled'"
@@ -1169,12 +1029,10 @@
                     >
                         <path
                             stroke-linecap="round"
-                            stroke-linejoin="round"
                             stroke-width="2"
                             d="M6 18L18 6M6 6l12 12"
                         />
                     </svg>
-
                 </div>
 
 
@@ -1188,7 +1046,6 @@
 
                 {{-- Dynamic Message --}}
                 <div class="mt-3">
-
                     <p
                         x-show="selectedStatus === 'confirmed'"
                         class="text-sm leading-6 text-slate-500"
@@ -1209,31 +1066,24 @@
                     >
                         Are you sure you want to cancel this booking?
                     </p>
-
                 </div>
 
 
-                {{-- Booking Information --}}
+                {{-- Booking Information Preview --}}
                 <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
-
                     <div class="flex items-center justify-between text-sm">
-
                         <span class="text-slate-500">
                             Booking
                         </span>
-
                         <span class="font-semibold text-slate-900">
                             #BK-<span x-text="selectedBookingId"></span>
                         </span>
-
                     </div>
 
                     <div class="mt-2 flex items-center justify-between text-sm">
-
                         <span class="text-slate-500">
                             New Status
                         </span>
-
                         <span
                             class="font-semibold capitalize"
                             :class="{
@@ -1243,19 +1093,16 @@
                             }"
                             x-text="selectedStatus"
                         ></span>
-
                     </div>
-
                 </div>
 
 
-                {{-- Form --}}
+                {{-- Status Update Form --}}
                 <form
-                    action="{{ route('bookings.update-status','id') }}"
+                    action="{{ route('bookings.update-status') }}"
                     method="POST"
                     class="mt-6"
                 >
-
                     @csrf
                     @method('PATCH')
 
@@ -1271,10 +1118,8 @@
                         :value="selectedStatus"
                     >
 
-
-                    {{-- Footer --}}
+                    {{-- Footer Buttons --}}
                     <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-
                         <button
                             type="button"
                             @click="closeStatusModal()"
@@ -1294,9 +1139,7 @@
                         >
                             Confirm Status Update
                         </button>
-
                     </div>
-
                 </form>
 
             </div>
@@ -1309,7 +1152,7 @@
 
 
 {{-- =============================================================
-    ALPINE CLOAK
+    ALPINE CLOAK STYLES
 ============================================================== --}}
 <style>
     [x-cloak] {
@@ -1317,9 +1160,6 @@
     }
 </style>
 
-
 </div>
-
-
 
 </x-mdLayout>

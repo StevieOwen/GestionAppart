@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function() {
         Route::get('bookings','index')->name('bookings.index');
         Route::get('bookings/{id}/edit','edit')->name('bookings.edit');
         Route::put('bookings/{id}','update')->name('bookings.update');
-        Route::patch('bookings-status/{id}','update_status')->name('bookings.update-status');
+        Route::patch('bookings-status','update_status')->name('bookings.update-status');
         Route::delete('bookings/{id}','destroy')->name('bookings.delete');
     
     });
@@ -55,6 +55,12 @@ Route::middleware('auth')->group(function() {
         Route::put('customers/{id}','update')->name('customers.update');
         Route::delete('customers/{id}','destroy')->name('customers.delete');
         Route::get('customer/book/appartment/{id}','book_appartment')->name('customers.book-appartment');
+        Route::get('customer/bookings','showbookings')->name('customers.bookings');
+        Route::put('customer/cancel-booking','cancelBooking')->name('customers.cancel-booking');
+        Route::get('customer/settings','settings')->name('customers.settings');
+        Route::put('customer/update-profile','updateProfile')->name('customers.update-profile');
+        Route::put('customer/update-password','updatePassword')->name('customers.update-password');
+        Route::put('customer/notifications','updateNotifications')->name('customer.notifications.update');
 
     });
 });
